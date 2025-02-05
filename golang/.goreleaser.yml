@@ -36,3 +36,6 @@ brews:
     description: "Downloads a subdirectory from a github repository"
     install: |
       bin.install "subgit"
+    commit_author:
+      name: Pranjalya
+      email: pranjalyatiwari10@gmail.com
