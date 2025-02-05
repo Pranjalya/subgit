@@ -7,6 +7,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -17,6 +18,12 @@ import (
 
 	"github.com/cheggaaa/pb/v3"
 	"golang.org/x/sync/semaphore"
+)
+
+var (
+	version = "dev" // Default value, can be overwritten by ldflags
+	commit  = "none"
+	date    = "unknown"
 )
 
 type GithubFetcher struct {
@@ -113,19 +120,19 @@ func (gf *GithubFetcher) ProcessFile(filepath string, wg *sync.WaitGroup, sem *s
 
 	err := sem.Acquire(context.Background(), 1)
 	if err != nil {
-		fmt.Printf("Failed to acquire semaphore: %v\n", err)
+		log.Printf("Failed to acquire semaphore: %v\n", err)
 		return
 	}
 	defer sem.Release(1)
 
 	content, err := gf.GetFileContent(filepath)
 	if err != nil {
-		fmt.Println(err) // Log the error, but continue processing other files.
+		log.Println(err) // Log the error, but continue processing other files.
 		return
 	}
 
 	if err := gf.SaveFileContent(filepath, content); err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 
@@ -217,6 +224,8 @@ func ParseGithubURL(githubURL string) (string, string, string, error) {
 }
 
 func main() {
+	fmt.Printf("subgit - Version: %s, Commit: %s, Date: %s\n", version, commit, date)
+
 	githubURL := flag.String("url", "", "GitHub URL to the subdirectory (e.g., https://github.com/user/repo/tree/branch/subfolder)")
 	rootDir := flag.String("root_dir", "", "Local directory to save the files")
 	noVerifySSL := flag.Bool("no-verify-ssl", false, "Disable SSL certificate verification (not recommended)")
