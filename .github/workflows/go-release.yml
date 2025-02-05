@@ -28,12 +28,10 @@ jobs:
           echo "::set-output name=tag_name::$VERSION"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Change to golang directory
-        run: cd golang
-
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        working-directory: ./golang
         run: |
           go install github.com/goreleaser/goreleaser@latest
           goreleaser release --clean
@@ -44,6 +42,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./dist/*
+          asset_path: ./golang/dist/*
           asset_name: ${{ github.event.repository.name }}-${{ runner.os }}-${{ steps.version.outputs.tag_name }}.tar.gz # or zip
           asset_content_type: application/gzip # or application/zip
