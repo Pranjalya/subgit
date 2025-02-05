@@ -1,0 +1,49 @@
+name: Go Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Build and Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.23.6'
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Get the version
+        id: version
+        run: |
+          VERSION=$(git describe --tags --abbrev=0)
+          echo "::set-output name=tag_name::$VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Change to golang directory
+        run: cd golang
+
+      - name: Build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          go install github.com/goreleaser/goreleaser@latest
+          goreleaser release --clean
+
+      - name: Upload binaries to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./dist/*
+          asset_name: ${{ github.event.repository.name }}-${{ runner.os }}-${{ steps.version.outputs.tag_name }}.tar.gz # or zip
+          asset_content_type: application/gzip # or application/zip

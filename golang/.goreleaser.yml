@@ -30,8 +30,8 @@ changelog:
       - '^test:'
 brews:
   - tap:
-      owner: pranjalya  # Your Github username
-      name: homebrew-tap   # The name of the tap
+      owner: pranjalya
+      name: homebrew-tap
     homepage: "https://github.com/pranjalya/subgit"
     description: "Downloads a subdirectory from a github repository"
     install: |
