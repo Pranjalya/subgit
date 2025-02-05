@@ -16,11 +16,6 @@ Downloads a subdirectory from a GitHub repository. This tool allows you to fetch
 
 Download the pre-built binaries for your operating system from the [Releases](https://github.com/pranjalya/subgit/releases) page.  Extract the archive and place the `subgit` executable in a directory included in your system's `PATH`.
 
-### Using Homebrew (macOS)
-
-```bash
-brew install pranjalya/tap/subgit
-```
 
 ### Using Go
 

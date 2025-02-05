@@ -28,11 +28,3 @@ changelog:
     exclude:
       - '^docs:'
       - '^test:'
-brews:
-  - tap:
-      owner: pranjalya
-      name: homebrew-tap
-    homepage: "https://github.com/pranjalya/subgit"
-    description: "Downloads a subdirectory from a github repository"
-    install: |
-      bin.install "subgit"
